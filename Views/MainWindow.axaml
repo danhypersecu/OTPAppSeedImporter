@@ -1,0 +1,179 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="using:OTPAppSeedImporter.ViewModels"
+        mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="600"
+        x:Class="OTPAppSeedImporter.Views.MainWindow"
+        Title="OTP App Seed Importer"
+        MinWidth="800" MinHeight="500">
+
+    <Design.DataContext>
+        <vm:MainWindowViewModel />
+    </Design.DataContext>
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <TextBlock Grid.Row="0" 
+                   Text="OTP App Seed Importer" 
+                   FontSize="24" 
+                   FontWeight="Bold" 
+                   HorizontalAlignment="Center" 
+                   Margin="0,0,0,20" />
+
+        <!-- File Selection Panel -->
+        <StackPanel Grid.Row="1" Orientation="Vertical" Spacing="15" Margin="0,0,0,20">
+            
+            <!-- Seed File Selection -->
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="120" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                
+                <TextBlock Grid.Column="0" 
+                           Text="Seed File:" 
+                           VerticalAlignment="Center" 
+                           FontWeight="SemiBold" />
+                
+                <TextBox Grid.Column="1" 
+                         Text="{Binding SeedFilePath}" 
+                         IsReadOnly="True" 
+                         Margin="10,0" 
+                         Background="#F5F5F5" />
+                
+                <Button Grid.Column="2" 
+                        Content="Browse..." 
+                        Command="{Binding BrowseSeedFileCommand}" 
+                        Padding="15,5" />
+            </Grid>
+
+            <!-- Database File Selection -->
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="120" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                
+                <TextBlock Grid.Column="0" 
+                           Text="Database:" 
+                           VerticalAlignment="Center" 
+                           FontWeight="SemiBold" />
+                
+                <TextBox Grid.Column="1" 
+                         Text="{Binding DatabasePath}" 
+                         IsReadOnly="True" 
+                         Margin="10,0" 
+                         Background="#F5F5F5" />
+                
+                <Button Grid.Column="2" 
+                        Content="Browse..." 
+                        Command="{Binding BrowseDatabaseCommand}" 
+                        Padding="15,5" />
+            </Grid>
+        </StackPanel>
+
+        <!-- Data Preview -->
+        <Border Grid.Row="2" 
+                BorderBrush="#CCCCCC" 
+                BorderThickness="1" 
+                CornerRadius="5" 
+                Padding="10">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,10">
+                    <TextBlock Text="Parsed Entries Preview:" 
+                               FontWeight="SemiBold" />
+                    <TextBlock Text="{Binding ParsedSeeds.Count, StringFormat=' ({0} entries)'}" 
+                               FontSize="12"
+                               FontStyle="Italic"
+                               Margin="5,0,0,0" />
+                </StackPanel>
+
+                <!-- Table Header -->
+                <Grid Grid.Row="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    
+                    <!-- Header Row -->
+                    <Border Grid.Row="0" Background="#E0E0E0" BorderBrush="#CCCCCC" BorderThickness="1">
+                        <Grid Margin="10,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="200" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Serial Number" FontWeight="Bold" />
+                            <TextBlock Grid.Column="1" Text="Seed (Public Key)" FontWeight="Bold" />
+                        </Grid>
+                    </Border>
+                    
+                    <!-- Data Rows -->
+                    <ScrollViewer Grid.Row="1" Background="White" BorderBrush="#CCCCCC" BorderThickness="1,0,1,1">
+                        <ItemsControl ItemsSource="{Binding ParsedSeeds}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border BorderBrush="#EEEEEE" BorderThickness="0,0,0,1" Background="White">
+                                        <Grid Margin="10,8">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="200" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Grid.Column="0" 
+                                                      Text="{Binding Token}" 
+                                                      FontWeight="SemiBold"
+                                                      VerticalAlignment="Center" />
+                                            <TextBlock Grid.Column="1" 
+                                                      Text="{Binding Pubkey}" 
+                                                      FontFamily="Courier New"
+                                                      FontSize="12"
+                                                      VerticalAlignment="Center"
+                                                      TextWrapping="Wrap" />
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </Grid>
+            </Grid>
+        </Border>
+
+        <!-- Import Button -->
+        <Button Grid.Row="3" 
+                Content="Import to Database" 
+                Command="{Binding ImportCommand}"
+                HorizontalAlignment="Center" 
+                Padding="20,10" 
+                FontSize="16" 
+                FontWeight="SemiBold"
+                Margin="0,20,0,10" 
+                Background="#007ACC" 
+                Foreground="White" />
+
+        <!-- Status Bar -->
+        <Border Grid.Row="4" 
+                Background="#F0F0F0" 
+                BorderBrush="#CCCCCC" 
+                BorderThickness="0,1,0,0" 
+                Padding="10">
+            <TextBlock Text="{Binding StatusMessage}" 
+                       FontStyle="Italic" />
+        </Border>
+    </Grid>
+</Window> 
